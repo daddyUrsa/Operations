@@ -11,6 +11,55 @@ struct EmptyArraysCount {
     var count: Int = 0
 }
 
+class BruteForceOperation: Operation {
+    
+    var result: String?
+    
+    private let characterArray = Consts.characterArray
+    lazy private var maxIndexArray = Consts.characterArray.count
+    
+    private var inputPassword: String
+        private var startIndexArray:[Int]
+        private var endIndexArray:[Int]
+        
+        init(password: String, startIndex: [Int], endIndex: [Int]) {
+            inputPassword = password
+            startIndexArray = startIndex
+            endIndexArray = endIndex
+        }
+        
+        override func main() {
+            
+             var currentIndexArray = startIndexArray
+            // Цикл подбора пароля
+             while true {
+                 
+                 // Формируем строку проверки пароля из элементов массива символов
+                 let currentPass = self.characterArray[currentIndexArray[0]] + self.characterArray[currentIndexArray[1]] + self.characterArray[currentIndexArray[2]] + self.characterArray[currentIndexArray[3]]
+                 
+                 // Выходим из цикла если пароль найден, или, если дошли до конца массива индексов
+                 if inputPassword == currentPass {
+                    result = currentPass
+                    break
+                 } else {
+                     if currentIndexArray.elementsEqual(endIndexArray) {
+                         break
+                     }
+                     
+                     for index in (0 ..< currentIndexArray.count).reversed() {
+                         guard currentIndexArray[index] < maxIndexArray - 1 else {
+                             currentIndexArray[index] = 0
+                             continue
+                         }
+                         currentIndexArray[index] += 1
+                         break
+                     }
+                 }
+             }
+        }
+    }
+
+
 class ViewController: UIViewController {
     @IBOutlet private weak var inputTextField: UITextField!
     @IBOutlet private weak var statusLabel: UILabel!
@@ -62,54 +111,80 @@ class ViewController: UIViewController {
     }
     
     private func start() {
-        let group = DispatchGroup()
-        let queue1 = DispatchQueue(label: "com.queue1", attributes: .concurrent)
-        let queue2 = DispatchQueue(label: "com.queue2", attributes: .concurrent)
-        let queue3 = DispatchQueue(label: "com.queue3", attributes: .concurrent)
-        let mainQueue = DispatchQueue.main
-        let semaphore = DispatchSemaphore(value: 1)
+        bruteForceOperation(password: password)
+    }
+    
+    private func bruteForceOperation(password: String) {
+        let searchingPassword = password
+        let queue = OperationQueue()
         let startTime = Date()
-        var arrayCount = EmptyArraysCount()
+
+        let operation1 = BruteForceOperation(password: searchingPassword, startIndex: [0,0,0,0], endIndex: [14,14,14,14])
+        let operation2 = BruteForceOperation(password: searchingPassword, startIndex: [15,15,15,15], endIndex: [29,29,29,29])
+        let operation3 = BruteForceOperation(password: searchingPassword, startIndex: [30,30,30,30], endIndex: [44,44,44,44])
+        let operation4 = BruteForceOperation(password: searchingPassword, startIndex: [45,45,45,45], endIndex: [61,61,61,61])
         
-        queue1.async(group: group) {
-            guard let result = self.bruteForce(startString: "0000", endString: "9999") else {
-                semaphore.wait()
-                arrayCount.count += 1
-                semaphore.signal()
-                return
-            }
-            mainQueue.async {
-                self.stop(password: result, startTime: startTime)
+        queue.addOperations([operation1,operation2,operation3,operation4], waitUntilFinished: false)
+        
+        operation1.completionBlock = {
+            if let result = operation1.result
+            {
+                queue.cancelAllOperations()
+                OperationQueue.main.addOperation {
+                    self.stop(password: result , startTime: startTime)
+                    self.indicator.isHidden = true
+                }
+                //operation1.isCancelled == false - необходим для отключения ложного срабатывания. Иначе одна из операций, которая будет последней, отработает данный код
+            } else if operation2.isFinished && operation3.isFinished && operation4.isFinished && operation1.isCancelled == false{
+                OperationQueue.main.addOperation {
+                    self.stop(password: "Error1" , startTime: startTime)
+                    self.indicator.isHidden = true
+                }
             }
         }
-        
-        queue2.async(group: group) {
-            guard let result = self.bruteForce(startString: "aaaa", endString: "zzzz") else {
-                semaphore.wait()
-                arrayCount.count += 1
-                semaphore.signal()
-                return
-            }
-            mainQueue.async {
-                self.stop(password: result, startTime: startTime)
-            }
-        }
-        
-        queue3.async(group: group) {
-            guard let result = self.bruteForce(startString: "AAAA", endString: "ZZZZ") else {
-                semaphore.wait()
-                arrayCount.count += 1
-                semaphore.signal()
-                return
-            }
-            mainQueue.async {
-                self.stop(password: result, startTime: startTime)
+        operation2.completionBlock = {
+            if let result = operation2.result
+            {
+                queue.cancelAllOperations()
+                OperationQueue.main.addOperation {
+                    self.stop(password: result , startTime: startTime)
+                    self.indicator.isHidden = true
+                }
+            } else if operation1.isFinished && operation3.isFinished && operation4.isFinished && operation2.isCancelled == false{
+                OperationQueue.main.addOperation {
+                    self.stop(password: "Error2" , startTime: startTime)
+                    self.indicator.isHidden = true
+                }
             }
         }
-        
-        group.notify(queue: mainQueue) {
-            if arrayCount.count == 3 {
-                self.stop(password: "Error", startTime: startTime)
+        operation3.completionBlock = {
+            if let result = operation3.result
+            {
+                queue.cancelAllOperations()
+                OperationQueue.main.addOperation {
+                    self.stop(password: result , startTime: startTime)
+                    self.indicator.isHidden = true
+                }
+            } else if operation1.isFinished && operation2.isFinished && operation4.isFinished && operation3.isCancelled == false{
+                OperationQueue.main.addOperation {
+                    self.stop(password: "Error3" , startTime: startTime)
+                    self.indicator.isHidden = true
+                }
+            }
+        }
+        operation4.completionBlock = {
+            if let result = operation4.result
+            {
+                queue.cancelAllOperations()
+                OperationQueue.main.addOperation {
+                    self.stop(password: result , startTime: startTime)
+                    self.indicator.isHidden = true
+                }
+            } else if operation1.isFinished && operation2.isFinished && operation3.isFinished && operation4.isCancelled == false{
+                OperationQueue.main.addOperation {
+                    self.stop(password: "Error4" , startTime: startTime)
+                    self.indicator.isHidden = true
+                }
             }
         }
     }
