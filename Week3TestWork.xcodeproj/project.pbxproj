@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		312020AD24F94CDD00D5975F /* BruteForceOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312020AC24F94CDD00D5975F /* BruteForceOperation.swift */; };
 		9367CFD12092FCF600E9A359 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9367CFD02092FCF600E9A359 /* Alert.swift */; };
 		9387B7182090BBFC007B9E0D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9387B7172090BBFC007B9E0D /* AppDelegate.swift */; };
 		9387B71A2090BBFC007B9E0D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9387B7192090BBFC007B9E0D /* ViewController.swift */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		312020AC24F94CDD00D5975F /* BruteForceOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BruteForceOperation.swift; sourceTree = "<group>"; };
 		9367CFD02092FCF600E9A359 /* Alert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		9387B7142090BBFC007B9E0D /* Week3TestWork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Week3TestWork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9387B7172090BBFC007B9E0D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				9387B72C2090CF66007B9E0D /* Password generator.swift */,
 				9367CFD02092FCF600E9A359 /* Alert.swift */,
 				93CCDAAA209355B600B8876B /* Constants.swift */,
+				312020AC24F94CDD00D5975F /* BruteForceOperation.swift */,
 			);
 			path = Code;
 			sourceTree = "<group>";
@@ -195,6 +198,7 @@
 				9387B71A2090BBFC007B9E0D /* ViewController.swift in Sources */,
 				9387B7182090BBFC007B9E0D /* AppDelegate.swift in Sources */,
 				9367CFD12092FCF600E9A359 /* Alert.swift in Sources */,
+				312020AD24F94CDD00D5975F /* BruteForceOperation.swift in Sources */,
 				9387B72D2090CF66007B9E0D /* Password generator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
